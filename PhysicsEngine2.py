@@ -31,16 +31,19 @@ while is_run:
     if position.y + radius >= SCREEN_HEIGHT:
         position.y = SCREEN_HEIGHT - radius
         velocity.y *= elasticity
+
     if position.x + radius >= SCREEN_WIDTH:
         position.x = SCREEN_WIDTH - radius
         velocity.x *= elasticity
+
     if position.x - radius <= 0:
         position.x = radius
         velocity.x *= elasticity
+
     if position.y - radius <= 0:
         position.y = radius
         velocity.y *= elasticity
-    # 상좌우 충돌 처리 (homework)
+
     # 배경
     screen.fill(black)
     # 공 그리기
