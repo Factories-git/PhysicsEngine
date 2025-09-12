@@ -13,7 +13,7 @@ black = (0, 0, 0)
 # 공에 관련된 변수들
 radius = 25
 position = pygame.math.Vector2(SCREEN_WIDTH / 2, radius) # 공의 위치
-velocity = pygame.math.Vector2(1.25, 0)
+velocity = pygame.math.Vector2(2, 0)
 
 # 중력 가속도
 gravity = pygame.math.Vector2(0, 0.5)
@@ -37,6 +37,9 @@ while is_run:
     if position.x - radius <= 0:
         position.x = radius
         velocity.x *= elasticity
+    if position.y - radius <= 0:
+        position.y = radius
+        velocity.y *= elasticity
     # 상좌우 충돌 처리 (homework)
     # 배경
     screen.fill(black)
