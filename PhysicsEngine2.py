@@ -4,7 +4,7 @@ import pygame
 pygame.init()
 SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("STEP 1 : 자유 낙하 운동")
+pygame.display.set_caption("STEP 2 : 자유 낙하 운동 + 튕기기")
 clock = pygame.time.Clock()
 
 is_run = True
@@ -31,6 +31,12 @@ while is_run:
     if position.y + radius >= SCREEN_HEIGHT:
         position.y = SCREEN_HEIGHT - radius
         velocity.y *= elasticity
+    if position.x + radius >= SCREEN_WIDTH:
+        position.x = SCREEN_WIDTH - radius
+        velocity.x *= elasticity
+    if position.x - radius <= 0:
+        position.x = radius
+        velocity.x *= elasticity
     # 상좌우 충돌 처리 (homework)
     # 배경
     screen.fill(black)
