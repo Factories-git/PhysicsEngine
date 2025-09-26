@@ -1,4 +1,3 @@
-
 from ball import Ball
 import pygame
 
@@ -6,17 +5,12 @@ import pygame
 pygame.init()
 SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("STEP 4 : 공 튕기기")
+pygame.display.set_caption("STEP 5 : 마찰계SIUUUUU")
 clock = pygame.time.Clock()
 
 is_run = True
 
 black = (0, 0, 0)
-# 공에 관련된 변수들
-
-# 중력 가속도
-elasticity = -0.85 # 탄성, 20% 손실 발생, 80% 유지
-
 
 balls = []
 

@@ -15,7 +15,6 @@ black = (0, 0, 0)
 
 # 중력 가속도
 gravity = pygame.math.Vector2(0, 0.5)
-elasticity = -0.85 # 탄성, 20% 손실 발생, 80% 유지
 
 
 balls = []

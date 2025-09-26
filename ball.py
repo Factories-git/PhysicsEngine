@@ -1,4 +1,5 @@
-import pygame, random
+import pygame
+import random
 
 SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 elasticity = -0.85  # 탄성, 20% 손실 발생, 80% 유지
@@ -12,6 +13,8 @@ class Ball:
         if radius <= 0:
             radius = random.randrange(10, 30)
         self.radius = radius
+        self.mass = radius ** 2  # 질량
+
         if not color:
             color = (random.randrange(256), random.randrange(256), random.randrange(256))
         self.color = color
@@ -34,12 +37,6 @@ class Ball:
         if self.position.y - self.radius <= 0:
             self.position.y = self.radius
             self.velocity.y *= elasticity
-
-    def collision_check(self, other):
-        d = self.position - other.position
-        if d.length() <= self.radius + other.radius:
-            return True
-        return False
 
     def draw(self, screen):
         pygame.draw.circle(screen, self.color, (
