@@ -72,6 +72,30 @@ def collision_start(arbiter, space, data):
 
 handler = space.add_collision_handler(collision_type, collision_type)
 handler.begin = collision_start
+is_run = True
+current_fruit = 0
+height = constant.screen_height
+width = constant.screen_width
+create_wall((0, height), (width, height)) #아래
+create_wall((0,0), (0, height)) #좌
+create_wall((width, 0), (width, height))
+
+while is_run:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            is_run = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            create_fruit(event.pos[0], 50, current_fruit)
+            current_fruit = random.randint(0, 3)
+    space.step(1 / constant.fps)
+    screen.fill(constant.background_color)
+
+    for fruit in fruits:
+        pos = tuple(map(int, fruit.body.position))
+        pygame.draw.circle(screen, fruit.color, pos, int(fruit.radius))
+
+    pygame.display.flip()
+    clock.tick(constant.fps)
 
 
 pygame.quit()
