@@ -1,69 +1,77 @@
 import pygame
 import pymunk
 import random
+import constant
 
 pygame.init()
 
-screen = pygame.display.set_mode((screen_width, screen_height))
-pygame.display.set_caption("pymunk 물리엔진")
+screen = pygame.display.set_mode((constant.screen_width, constant.screen_height))
+pygame.display.set_caption(constant.game_title)
 clock = pygame.time.Clock()
-
-
-is_run = True
 
 # pymunk 초기화
 space = pymunk.Space()  # 물리 공간
 # 중력
 space.gravity = (0, 900)
-# 정적(static) 경계선 (벽) Segment(몸체, 시작점, 끝점, 두께)
-floor = pymunk.Segment(space.static_body, (0, screen_height - 10), (screen_width, screen_height - 10), 5)
-floor.elasticity = 0.85
-floor.friction = 1.0
-left_wall = pymunk.Segment(space.static_body, (0, 0), (0, screen_height), 5)
-right_wall = pymunk.Segment(space.static_body, (screen_width, 0), (screen_width, screen_height), 5)
-top_wall = pymunk.Segment(space.static_body, (0, 0), (screen_width, 0), 5)
-space.add(floor)
-space.add(left_wall, right_wall, top_wall)
-
-balls = []
+collision_type = 1
 
 
-def create_ball(x, y):
-    radius = random.randint(10, 30)
-    mass = radius ** 2 * 3.1415926535897932387263
-    # Body(질량, 관성 정보(질량, 속도, radius)), 물리적 속성임
-    body = pymunk.Body(mass, pymunk.moment_for_circle(mass, 0, radius))
+def create_wall(p1, p2):  #p1: 시작점, p2: 끝 지점
+    wall = pymunk.Segment(space.static_body, p1, p2, 10)
+    wall.elasticity = constant.elasticity
+    wall.friction = constant.friction
+    space.add(wall)
+
+
+fruits = []  # 과일 리스트
+ball_types = constant.ball_types
+
+
+def create_fruit(x, y, level):  # level: index
+    if level < 0 or level >= len(ball_types):
+        return
+    radius, color = ball_types[level]
+
+    body = pymunk.Body(level+1, pymunk.moment_for_circle(level+1, 0, radius))
     body.position = (x, y)
     shape = pymunk.Circle(body, radius)
-    shape.elasticity = 0.6  # 공 탄성
-    shape.friction = 0.8
+    shape.elasticity = 0.3
+    shape.friction = 0.5
+    shape.collision_type = collision_type
+    shape.level = level # 모양 정보
+    shape.color = color
+    shape.is_removed = False # 삭제 되어져야 할 공에 대한 상태 정보
 
     space.add(body, shape)
-    color = (random.randrange(256), random.randrange(256), random.randrange(256))
-    balls.append((shape, color))
+    fruits.append(shape)
 
 
-while is_run:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            is_run = False
-        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            x, y = event.pos
-            create_ball(x, y)
+def resolve_collision(space, f1, f2):
+    if f1.is_removed or f2.is_removed:
+        return
+    f1.is_removed = True
+    f2.is_removed = True
+    space.remove(f1.body, f1)
+    space.remove(f2.body, f2)
+    if f1 in fruits:
+        fruits.remove(f1)
+    if f2 in fruits:
+        fruits.remove(f2)
+    new_x = (f1.body.position.x + f2.body.position.x) / 2
+    new_y = (f1.body.position.y + f1.body.position.y) / 2
+    create_fruit(new_x, new_y, f1.level + 1)
 
-    # event 처리
-    dt = 1 / 60
-    space.step(dt)
 
-    #draw
-    screen.fill(background_color)
-    for ball_shape, ball_color in balls:
-        x = ball_shape.body.position.x
-        y = ball_shape.body.position.y
-        radius = ball_shape.radius
-        pygame.draw.circle(screen, ball_color, (x, y), radius)
+def collision_start(arbiter, space, data):
+    f1, f2 = arbiter.shapes
+    if f1.level == f2.level:
+        space.add_post_step_callback(resolve_collision, f1, f2)
+        return False # 충돌 안됐니? -> 응 됨
+    return True # -> ㄴㄴ 아님
 
-    pygame.draw.line(screen, (255, 255, 255), (0, screen_height-10), (screen_width, screen_height-10), 10)
-    pygame.display.flip()
-    clock.tick(60)
+
+handler = space.add_collision_handler(collision_type, collision_type)
+handler.begin = collision_start
+
+
 pygame.quit()

@@ -3,6 +3,8 @@ screen_width, screen_height = 600, 800
 background_color = (0, 0, 0)
 game_title = "Siu박 게임"
 fps = 60
+elasticity = 0.5
+friction = 0.8
 
 # 색상(튜플), 반지름
 ball_types = [
