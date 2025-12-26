@@ -1,6 +1,8 @@
 # 상수(고정값)
-screen_width, screen_height = 600, 800
+screen_width, screen_height = 456, 800
 background_color = (0, 0, 0)
+wall_color = (255, 255, 255)
+deadline_color = (255, 0, 0)
 game_title = "Siu박 게임"
 fps = 60
 elasticity = 0.5
